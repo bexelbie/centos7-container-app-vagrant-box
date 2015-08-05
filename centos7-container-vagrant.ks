@@ -103,6 +103,14 @@ systemctl enable kube-apiserver kube-controller-manager kube-scheduler
 
 systemctl enable kube-proxy kubelet
 
+# Enable tcp access to the docker daemon
+cat << EOF > docker-network
+# /etc/sysconfig/docker-network
+DOCKER_NETWORK_OPTIONS='-H 0.0.0.0:2376 -H unix:///var/run/docker.sock --tlsverify --tlscacert=ca.pem --tlscert=server-cert.pem --tlskey=server-key.pem'
+EOF
+
+mv docker-network /etc/sysconfig/
+
 systemctl enable docker
 
 groupadd docker
